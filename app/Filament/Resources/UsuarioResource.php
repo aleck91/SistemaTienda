@@ -31,7 +31,8 @@ class UsuarioResource extends Resource
                     ->placeholder('Ingresa el nombre completo'),
 
                 Forms\Components\TextInput::make('email')
-                    ->label('Username')
+                    ->label('Email')
+                    ->email()
                     ->maxLength(50)
                     ->required()
                     ->placeholder('Ingresa el nombre de usuario'),
