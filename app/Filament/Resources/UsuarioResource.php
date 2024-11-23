@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Hash;
 
 class UsuarioResource extends Resource
 {
@@ -23,7 +24,33 @@ class UsuarioResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\TextInput::make('name')
+                    ->label('Nombre de Usuario')
+                    ->maxLength(255)
+                    ->required()
+                    ->placeholder('Ingresa el nombre completo'),
+
+                Forms\Components\TextInput::make('email')
+                    ->label('Username')
+                    ->maxLength(50)
+                    ->required()
+                    ->placeholder('Ingresa el nombre de usuario'),
+
+                Forms\Components\Select::make('roles')
+                    ->label('Rol')
+                    ->relationship('roles', 'name') // Usa la relación definida en el modelo
+                    ->multiple() // Permitir varios roles
+                    ->searchable() // Permitir búsqueda en la lista
+                    ->required()
+                    ->placeholder('Selecciona un rol'),
+
+                Forms\Components\TextInput::make('password')
+                    ->label('Contraseña')
+                    ->password() // Campo de tipo contraseña
+                    ->maxLength(255)
+                    ->dehydrateStateUsing(fn ($state) => $state ? Hash::make($state) : null) // Encripta solo si se ingresa una nueva contraseña
+                    ->dehydrated(fn ($state) => filled($state)) // Evita que se pase el campo si está vacío
+                    ->placeholder('Deja vacío para mantener la contraseña actual'),
             ]);
     }
 
